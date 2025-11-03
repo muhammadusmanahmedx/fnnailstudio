@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+"use client";
+
+import { useEffect, useState } from "react";
 
 const AddProduct = () => {
   const [categories, setCategories] = useState([]);
@@ -7,11 +9,11 @@ const AddProduct = () => {
     // Fetch categories from the API
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories');
+        const response = await fetch("/api/categories");
         const data = await response.json();
         setCategories(data.categories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
