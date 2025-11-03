@@ -12,8 +12,8 @@ const outfit = Outfit({
 })
 
 export const metadata = {
-  title: "Salsabeel Scents",
-  description: "Pakistans Premium Fragrance Brand",
+  title: "FN Nail Studio",
+  description: "Pakistans Premium Nail Brand",
 };
 
 export default function RootLayout({ children }) {
@@ -21,7 +21,19 @@ export default function RootLayout({ children }) {
     <ClerkProvider>      
       <html lang="en">
         <body className={`${outfit.className} antialiased text-gray-700`} suppressHydrationWarning={true}>
-          <Toaster />
+          <Toaster 
+            position="top-center"
+            toastOptions={{
+              duration: 2000,
+              style: {
+                maxWidth: '500px',
+              },
+            }}
+            containerStyle={{
+              top: 20,
+            }}
+            limit={2}
+          />
           <AppContextProvider>
           
             {children}

@@ -20,11 +20,24 @@ try {
 
     await connectToDatabase();
     // fetch seller orders
-    Address.length
+    const orders = await Order.find({ })
+        .populate('address')
+        .populate('items.product')
+        .lean();
 
-    const orders = await Order.find({ }).populate('address items.product');
+    // Add effectivePrice to products
+    const enrichedOrders = orders.map(order => ({
+        ...order,
+        items: order.items.map(item => ({
+            ...item,
+            product: item.product ? {
+                ...item.product,
+                effectivePrice: item.product.offerPrice > 0 ? item.product.offerPrice : item.product.price
+            } : null
+        }))
+    }));
 
-    return NextResponse.json({ success: true, orders })
+    return NextResponse.json({ success: true, orders: enrichedOrders });
 
 } catch (error) {
      return NextResponse.json({ success: false, message: error.message })

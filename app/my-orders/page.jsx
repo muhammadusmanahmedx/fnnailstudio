@@ -14,6 +14,61 @@ const MyOrders = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const colorNameMap = {
+        'Black': '#000000',
+        'White': '#FFFFFF',
+        'Red': '#FF0000',
+        'Green': '#00FF00',
+        'Blue': '#0000FF',
+        'Yellow': '#FFFF00',
+        'Magenta': '#FF00FF',
+        'Cyan': '#00FFFF',
+        'Orange': '#FFA500',
+        'Purple': '#800080',
+        'Pink': '#FFC0CB',
+        'Brown': '#A52A2A',
+        'Gray': '#808080',
+        'Silver': '#C0C0C0',
+        'Gold': '#FFD700',
+        'Lavender': '#E6E6FA',
+        'Khaki': '#F0E68C',
+        'Light Green': '#90EE90',
+        'Sky Blue': '#87CEEB',
+        'Hot Pink': '#FF69B4',
+        'Default': '#FFFFFF'
+    };
+
+    const resolveColorDisplay = (colorValue, colorHexValue = '') => {
+        // If colorValue is explicitly "Default", return it as-is
+        if (typeof colorValue === 'string' && colorValue.trim() === 'Default') {
+            return { name: 'Default', hex: '#FFFFFF' };
+        }
+
+        const hexCandidate = typeof colorHexValue === 'string' ? colorHexValue.trim() : '';
+
+        if (hexCandidate && hexCandidate.startsWith('#')) {
+            const upperHex = hexCandidate.toUpperCase();
+            const matchedName = Object.entries(colorNameMap).find(([, hex]) => hex.toUpperCase() === upperHex)?.[0]
+                || (typeof colorValue === 'string' && colorValue.trim()) || 'Custom';
+            return { name: matchedName, hex: upperHex };
+        }
+
+        if (!colorValue) {
+            return { name: 'Default', hex: '#FFFFFF' };
+        }
+
+        const trimmed = colorValue.trim();
+
+        if (trimmed.startsWith('#')) {
+            const upperHex = trimmed.toUpperCase();
+            const matchedName = Object.entries(colorNameMap).find(([, hex]) => hex.toUpperCase() === upperHex)?.[0] || 'Custom';
+            return { name: matchedName, hex: upperHex };
+        }
+
+        const hex = colorNameMap[trimmed] || '#CCCCCC';
+        return { name: trimmed, hex };
+    };
+
     const fetchOrders = async () => {
         try {
             const token = await getToken();
@@ -86,16 +141,16 @@ const MyOrders = () => {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+            <div className="min-h-screen bg-gradient-to-b from-[#FFF5EB] to-[#F6E6D6]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Header Section */}
                     <div className="mb-8">
                         <div className="flex flex-col">
-                            <h1 className="text-3xl md:text-4xl font-regular text-gray-900 tracking-tight">
-                                My <span className="text-amber-600 font-regular">Orders</span>
+                            <h1 className="text-3xl md:text-4xl font-serif text-[#1D1D1E] tracking-tight">
+                                My <span className="text-[#D4A574] font-serif">Orders</span>
                             </h1>
                             <div className="mt-2 flex justify-center md:justify-start">
-                                <div className="w-20 h-1 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div>
+                                <div className="w-20 h-1 bg-gradient-to-r from-[#D4A574] to-[#F6E6D6] rounded-full"></div>
                             </div>
                         </div>
                         <p className="text-gray-600 mt-4">Track and manage your order history</p>
@@ -117,8 +172,9 @@ const MyOrders = () => {
                                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                                     <div className="flex items-center gap-4">
                                                         <div>
-                                                            <h3 className="text-lg font-semibold text-gray-900">
-                                                                Order #{order._id.slice(-8).toUpperCase()}
+                                                            <h3 className="text-lg md:text-xl font-bold text-gray-800">
+                                                                Order #{order._id.slice(-6)}
+                                                                
                                                             </h3>
                                                             <p className="text-sm text-gray-500 mt-0.5">
                                                                 {new Date(order.date).toLocaleDateString('en-US', {
@@ -203,15 +259,30 @@ const MyOrders = () => {
                                                                         <p className="text-sm text-gray-600 mt-1">
                                                                             {item.product.category}
                                                                         </p>
+                                                                        {(() => {
+                                                                            const resolvedColor = resolveColorDisplay(item.color, item.colorHex);
+                                                                            return (
+                                                                                <div className="flex items-center gap-2 mt-1">
+                                                                                    <span className="text-sm text-gray-600 font-medium">Color:</span>
+                                                                                    {resolvedColor.name !== 'Default' && (
+                                                                                        <div
+                                                                                            className="w-4 h-4 rounded border border-gray-300"
+                                                                                            style={{ backgroundColor: resolvedColor.hex }}
+                                                                                        ></div>
+                                                                                    )}
+                                                                                    <span className="text-sm text-gray-600">{resolvedColor.name}</span>
+                                                                                </div>
+                                                                            );
+                                                                        })()}
                                                                         <p className="text-sm text-gray-700 mt-1 font-medium">
-                                                                            {currency}{item.product.offerPrice.toFixed(2)} each
+                                                                            {currency}{(item.product.offerPrice && item.product.offerPrice > 0 ? item.product.offerPrice : item.product.price).toFixed(2)} each
                                                                         </p>
                                                                     </div>
                                                                     <div className="text-right">
                                                                         <p className="text-sm text-gray-600">Quantity</p>
                                                                         <p className="text-lg font-bold text-gray-900">×{item.quantity}</p>
                                                                         <p className="text-sm text-gray-700 font-semibold mt-1">
-                                                                            {currency}{(item.product.offerPrice * item.quantity).toFixed(2)}
+                                                                            {currency}{((item.product.offerPrice && item.product.offerPrice > 0 ? item.product.offerPrice : item.product.price) * item.quantity).toFixed(2)}
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -223,20 +294,20 @@ const MyOrders = () => {
                                                 {/* Order Details Grid */}
                                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                                     {/* Delivery Address */}
-                                                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-lg border border-blue-100">
+                                                    <div className="bg-gray-50 p-5 rounded-lg ">
                                                         <div className="flex items-center gap-2 mb-3">
-                                                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <svg className="w-5 h-5 text-gray-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                             </svg>
-                                                            <h4 className="font-semibold text-gray-900">Delivery Address</h4>
+                                                            <h4 className="font-semibold text-[#1D1D1E]">Delivery Address</h4>
                                                         </div>
                                                         {order.address ? (
                                                             <div className="space-y-1 text-sm">
-                                                                <p className="font-semibold text-gray-900">{order.address.fullName || 'N/A'}</p>
+                                                                <p className="font-semibold text-[#1D1D1E]">{order.address.fullName || 'N/A'}</p>
                                                                 <p className="text-gray-700">{order.address.area || 'N/A'}</p>
                                                                 <p className="text-gray-700">{order.address.city || 'N/A'}</p>
-                                                                <p className="text-gray-600 pt-2 border-t border-blue-200 mt-2">
+                                                                <p className="text-gray-600 pt-2 border-t border-gray-300 mt-2">
                                                                     <span className="font-medium">Phone:</span> {order.address.phoneNumber || 'N/A'}
                                                                 </p>
                                                             </div>
@@ -246,12 +317,12 @@ const MyOrders = () => {
                                                     </div>
 
                                                     {/* Order Summary */}
-                                                    <div className="bg-gradient-to-br from-gray-50 to-slate-50 p-5 rounded-lg border border-gray-200">
+                                                    <div className="bg-gray-50 p-5 rounded-lg ">
                                                         <div className="flex items-center gap-2 mb-3">
-                                                            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <svg className="w-5 h-5 text-gray-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                             </svg>
-                                                            <h4 className="font-semibold text-gray-900">Order Summary</h4>
+                                                            <h4 className="font-semibold text-[#1D1D1E]">Order Summary</h4>
                                                         </div>
                                                         <div className="space-y-2.5 text-sm">
                                                             <div className="flex justify-between items-center">

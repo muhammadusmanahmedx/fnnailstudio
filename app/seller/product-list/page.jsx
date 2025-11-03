@@ -78,15 +78,20 @@ useEffect(() => {
   }
 }, [user]);
 
+// Add debugging logs to verify product data
+useEffect(() => {
+  console.log("Fetched products:", products);
+}, [products]);
+
 
   return (
-    <div className="flex-1 min-h-screen flex flex-col justify-between">
+    <div className="flex-1 min-h-screen flex flex-col justify-between bg-pink-50">
       {loading ? <Loading /> : <div className="w-full lg:p-10 md:p-6 p-3">
-        <h2 className="pb-3 md:pb-4 text-lg md:text-xl font-medium">All Products</h2>
-        <div className="flex flex-col items-center max-w-full w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
+        <h2 className="pb-3 md:pb-4 text-lg md:text-xl font-medium text-pink-700">All Products</h2>
+        <div className="flex flex-col items-center max-w-full w-full overflow-hidden rounded-md bg-white border border-pink-500/20">
           <div className="w-full overflow-x-auto">
             <table className="table-fixed w-full min-w-[600px] overflow-hidden">
-              <thead className="text-gray-900 text-xs md:text-sm text-left bg-gray-50">
+              <thead className="text-pink-900 text-xs md:text-sm text-left bg-pink-200">
                 <tr>
                   <th className="w-2/3 md:w-2/5 px-2 md:px-4 py-2 md:py-3 font-medium truncate">Product</th>
                 <th className="px-2 md:px-4 py-2 md:py-3 font-medium truncate max-sm:hidden">Category</th>
@@ -96,11 +101,11 @@ useEffect(() => {
                 <th className="px-2 md:px-4 py-2 md:py-3 font-medium truncate text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="text-xs md:text-sm text-gray-500">
+            <tbody className="text-xs md:text-sm text-pink-500">
               {products.map((product, index) => (
-                <tr key={index} className="border-t border-gray-500/20 hover:bg-gray-50">
+                <tr key={index} className="border-t border-pink-500/20 hover:bg-pink-100">
                   <td className="px-2 md:px-4 py-2 md:py-3 flex items-center space-x-2 md:space-x-3">
-                    <div className="bg-gray-500/10 rounded p-1 md:p-2 flex-shrink-0">
+                    <div className="bg-pink-500/10 rounded p-1 md:p-2 flex-shrink-0">
                       <Image
                         src={product.image[0]}
                         alt="product Image"
@@ -114,7 +119,16 @@ useEffect(() => {
                     </span>
                   </td>
                   <td className="px-2 md:px-4 py-2 md:py-3 max-sm:hidden text-xs md:text-sm">{product.category}</td>
-                  <td className="px-2 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium">Rs{product.offerPrice}</td>
+                  <td className="px-2 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium">
+                    {product.offerPrice && product.offerPrice > 0 ? (
+                      <>
+                        <span className="line-through text-gray-500">Rs{product.price}</span>
+                        <span className="ml-2 text-pink-600">Rs{product.offerPrice}</span>
+                      </>
+                    ) : (
+                      <span>Rs{product.price}</span>
+                    )}
+                  </td>
                   <td className="px-2 md:px-4 py-2 md:py-3">
                     <div className="flex items-center justify-center gap-1 md:gap-2">
                       {/* Edit Button */}
@@ -158,7 +172,7 @@ useEffect(() => {
           </div>
         </div>
       </div>}
-      <Footer />
+      {/* <Footer /> */}
       
       {/* Delete Confirmation Modal */}
       {deleteModal.show && (

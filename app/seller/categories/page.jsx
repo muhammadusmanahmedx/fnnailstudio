@@ -130,22 +130,20 @@ const CategoriesPage = () => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-white">
-      {/* <SideBar /> */}
+    <div className="flex h-screen bg-pink-50 md:w-[calc(100%-16rem)]">
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* <Navbar /> */}
         <div className="flex-1 min-h-screen flex flex-col justify-between">
           {loading ? (
             <Loading />
           ) : (
           <div className="w-full lg:p-10 md:p-6 p-3">
             <div className="flex justify-between items-center mb-3 md:mb-4">
-              <h2 className="pb-2 md:pb-4 text-lg md:text-xl font-medium">All Categories</h2>
+              <h2 className="pb-2 md:pb-4 text-lg md:text-xl font-medium text-pink-700">All Categories</h2>
             </div>
             
             {/* Add/Edit Category Form */}
-            <div className="mb-4 md:mb-6 p-3 md:p-4 bg-white rounded-md border border-gray-500/20">
-              <h4 className="text-base md:text-lg font-medium mb-2 md:mb-3">
+            <div className="mb-4 md:mb-6 p-3 md:p-4 bg-white rounded-md border border-pink-500/20">
+              <h4 className="text-base md:text-lg font-medium mb-2 md:mb-3 text-pink-700">
                 {editingCategory ? 'Edit Category' : 'Add New Category'}
               </h4>
               <div className="flex flex-col sm:flex-row gap-2 md:gap-4 items-stretch sm:items-center">
@@ -154,14 +152,14 @@ const CategoriesPage = () => {
                   placeholder="Category Name"
                   value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
-                  className="flex-1 px-3 py-2 text-sm md:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="flex-1 px-3 py-2 text-sm md:text-base border border-pink-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
                 {editingCategory ? (
                   <div className="flex gap-2 md:gap-3">
                     <button
                       onClick={handleUpdate}
                       disabled={submitLoading}
-                      className="px-3 md:px-4 py-2 text-sm md:text-base bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-3 md:px-4 py-2 text-sm md:text-base bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {submitLoading ? 'Updating...' : 'Update'}
                     </button>
@@ -176,7 +174,7 @@ const CategoriesPage = () => {
                   <button
                     onClick={handleAdd}
                     disabled={submitLoading}
-                    className="px-3 md:px-4 py-2 text-sm md:text-base bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 md:px-4 py-2 text-sm md:text-base bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {submitLoading ? 'Adding...' : 'Add Category'}
                   </button>

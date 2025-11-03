@@ -1,12 +1,14 @@
 'use client';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { assets, orderDummyData } from "@/assets/assets";
 import Image from "next/image";
 import { useAppContext } from "@/context/AppContext";
 import Footer from "@/components/seller/Footer";
 import Loading from "@/components/Loading";
+import Receipt from "@/components/Receipt";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useReactToPrint } from 'react-to-print';
 
 const Orders = () => {
 
@@ -16,6 +18,63 @@ const Orders = () => {
     const [loading, setLoading] = useState(true);
     const [updatingStatus, setUpdatingStatus] = useState({});
     const [activeFilter, setActiveFilter] = useState('all');
+    const [selectedOrderForReceipt, setSelectedOrderForReceipt] = useState(null);
+    const receiptRef = useRef();
+
+    const colorNameMap = {
+        'Black': '#000000',
+        'White': '#FFFFFF',
+        'Red': '#FF0000',
+        'Green': '#00FF00',
+        'Blue': '#0000FF',
+        'Yellow': '#FFFF00',
+        'Magenta': '#FF00FF',
+        'Cyan': '#00FFFF',
+        'Orange': '#FFA500',
+        'Purple': '#800080',
+        'Pink': '#FFC0CB',
+        'Brown': '#A52A2A',
+        'Gray': '#808080',
+        'Silver': '#C0C0C0',
+        'Gold': '#FFD700',
+        'Lavender': '#E6E6FA',
+        'Khaki': '#F0E68C',
+        'Light Green': '#90EE90',
+        'Sky Blue': '#87CEEB',
+        'Hot Pink': '#FF69B4',
+        'Default': '#FFFFFF'
+    };
+
+    const resolveColorDisplay = (colorValue, colorHexValue = '') => {
+        // If colorValue is explicitly "Default", return it as-is
+        if (typeof colorValue === 'string' && colorValue.trim() === 'Default') {
+            return { name: 'Default', hex: '#FFFFFF' };
+        }
+
+        const hexCandidate = typeof colorHexValue === 'string' ? colorHexValue.trim() : '';
+
+        if (hexCandidate && hexCandidate.startsWith('#')) {
+            const upperHex = hexCandidate.toUpperCase();
+            const matchedName = Object.entries(colorNameMap).find(([, hex]) => hex.toUpperCase() === upperHex)?.[0]
+                || (typeof colorValue === 'string' && colorValue.trim()) || 'Custom';
+            return { name: matchedName, hex: upperHex };
+        }
+
+        if (!colorValue) {
+            return { name: 'Default', hex: '#FFFFFF' };
+        }
+
+        const trimmed = colorValue.trim();
+
+        if (trimmed.startsWith('#')) {
+            const upperHex = trimmed.toUpperCase();
+            const matchedName = Object.entries(colorNameMap).find(([, hex]) => hex.toUpperCase() === upperHex)?.[0] || 'Custom';
+            return { name: matchedName, hex: upperHex };
+        }
+
+        const hex = colorNameMap[trimmed] || '#CCCCCC';
+        return { name: trimmed, hex };
+    };
 
     const statusFilters = [
         { key: 'all', label: 'All Orders', color: 'text-gray-600' },
@@ -94,6 +153,22 @@ const Orders = () => {
             fetchSellerOrders();
         }
     }, [user]);
+
+    const handlePrintReceipt = useReactToPrint({
+        contentRef: receiptRef,
+        documentTitle: `Receipt-${selectedOrderForReceipt?._id.slice(-8).toUpperCase()}`,
+        onAfterPrint: () => {
+            toast.success('Receipt printed successfully!');
+            setSelectedOrderForReceipt(null);
+        }
+    });
+
+    const generateReceipt = (order) => {
+        setSelectedOrderForReceipt(order);
+        setTimeout(() => {
+            handlePrintReceipt();
+        }, 100);
+    };
 
     return (
         <div className="flex-1 h-screen overflow-scroll flex flex-col justify-between text-sm">
@@ -208,12 +283,27 @@ const Orders = () => {
                                             <div className="flex-1">
                                                 <p className="font-medium">{item.product.name}</p>
                                                 <p className="text-sm text-gray-600">Category: {item.product.category}</p>
-                                                <p className="text-sm text-gray-600">Price: {currency}{item.product.offerPrice}</p>
+                                                {(() => {
+                                                    const resolvedColor = resolveColorDisplay(item.color, item.colorHex);
+                                                    return (
+                                                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                            <span className="font-medium">Color:</span>
+                                                            {resolvedColor.name !== 'Default' && (
+                                                                <div
+                                                                    className="w-4 h-4 rounded border border-gray-300"
+                                                                    style={{ backgroundColor: resolvedColor.hex }}
+                                                                ></div>
+                                                            )}
+                                                            <span>{resolvedColor.name}</span>
+                                                        </div>
+                                                    );
+                                                })()}
+                                                <p className="text-sm text-gray-600">Price: {currency}{item.product.offerPrice > 0 ? item.product.offerPrice : item.product.price}</p>
                                             </div>
                                             <div className="text-right">
                                                 <p className="font-medium">Qty: {item.quantity}</p>
                                                 <p className="text-sm text-gray-600">
-                                                    Total: {currency}{item.product.offerPrice * item.quantity}
+                                                    Total: {currency}{(item.product.offerPrice > 0 ? item.product.offerPrice : item.product.price) * item.quantity}
                                                 </p>
                                             </div>
                                         </div>
@@ -275,11 +365,34 @@ const Orders = () => {
                                     )}
                                 </div>
                             </div>
+
+                            {/* Receipt Button */}
+                            <div className="flex justify-end mt-4">
+                                <button
+                                    onClick={() => generateReceipt(order)}
+                                    className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors flex items-center gap-2 text-sm font-medium"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                    </svg>
+                                    Generate Receipt
+                                </button>
+                            </div>
                         </div>
                         ))
                     )}
                 </div>
             </div>}
+
+            {/* Hidden Receipt Component for Printing */}
+            <div style={{ display: 'none' }}>
+                {selectedOrderForReceipt && (
+                    <div ref={receiptRef}>
+                        <Receipt order={selectedOrderForReceipt} currency={currency} />
+                    </div>
+                )}
+            </div>
+
             {/* <Footer /> */}
         </div>
     );

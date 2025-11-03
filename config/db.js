@@ -18,7 +18,7 @@ export async function connectToDatabase() {
             socketTimeoutMS: 45000, // 45 seconds socket timeout
         }
 
-        cached.promise = mongoose.connect(`${process.env.MONGODB_URI}/EcommerceI`, opts).then((mongoose) => {
+        cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {
             console.log('MongoDB connected successfully');
             return mongoose;
         }).catch((error) => {

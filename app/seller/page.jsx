@@ -205,7 +205,7 @@ try {
         <button 
           type="submit" 
           disabled={isLoading}
-          className="px-8 py-2.5 bg-orange-600 text-white font-medium rounded disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+          className="px-8 py-2.5 bg-pink-600 text-white font-medium rounded disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
         >
           {isLoading ? 'ADDING...' : 'ADD'}
         </button>

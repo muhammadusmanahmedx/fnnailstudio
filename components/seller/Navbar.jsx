@@ -10,7 +10,7 @@ const Navbar = () => {
       <Image
         onClick={() => router.push('/')}
         className="w-28 lg:w-32 cursor-pointer"
-        src="https://res.cloudinary.com/dshjm6hcx/image/upload/v1758994664/Asset_1_seeizr.png"
+        src="https://res.cloudinary.com/dshjm6hcx/image/upload/v1762083661/Frame_151_1_fnaqaz_1_vou6vn.png"
         alt="Logo"
         width={150}   // ✅ required
         height={50}   // ✅ required

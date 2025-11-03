@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useClerk } from "@clerk/nextjs";
 
 const OrderSummary = () => {
   const { currency, router, getCartCount, getCartAmount, getToken, user, cartItems, setCartItems } =
     useAppContext();
+  
+  const { openSignIn } = useClerk();
 
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -146,22 +149,57 @@ const OrderSummary = () => {
   const createOrder = async () => {
     try {
 
+      // Check if user is authenticated
+      if (!user) {
+        toast.error("Please sign in to place an order");
+        openSignIn();
+        return;
+      }
 
       //main
       if (!selectedAddress) {
         return toast.error("Please add your details before placing the order");
       }
 
-      let cartItemsArray = Object.keys(cartItems).map((key) => ({
-        product: key,
-        quantity: cartItems[key],
-      }));
+      let cartItemsArray = Object.keys(cartItems).map((key) => {
+        const item = cartItems[key];
+        const quantity = typeof item === 'number' ? item : item?.quantity || 0;
+        const colorName = typeof item === 'object' ? item?.colorName : null;
+        const colorHex = typeof item === 'object' ? (item?.colorHex || item?.color) : null;
+        const productId = typeof item === 'object' ? item?.productId : null;
+
+        const keyParts = key.split('_');
+        const keyProductId = keyParts[0];
+        const colorFromKey = keyParts.length > 1 ? keyParts.slice(1).join('_') : null;
+
+        const resolvedColorName = colorName || colorFromKey || 'Default';
+        const resolvedProductId = productId || keyProductId;
+
+        console.log('Cart item:', key, {
+          quantity,
+          colorName: resolvedColorName,
+          colorHex,
+          productId: resolvedProductId,
+          originalItem: item,
+        });
+
+        return {
+          product: key,
+          productId: resolvedProductId,
+          quantity,
+          colorName: resolvedColorName,
+          colorHex: colorHex,
+        };
+      });
 
       cartItemsArray = cartItemsArray.filter((item) => item.quantity > 0);
 
       if (cartItemsArray.length === 0) {
         return toast.error("Cart is empty");
       }
+
+      console.log('=== SENDING ORDER ===');
+      console.log('Cart items array being sent:', JSON.stringify(cartItemsArray, null, 2));
 
       const token = await getToken();
       const { data } = await axios.post(
@@ -192,10 +230,10 @@ const OrderSummary = () => {
   }, [user]);
 
   return (
-    <div className="w-full md:w-96 bg-gray-500/5 p-5">
-      <h2 className="text-xl md:text-2xl font-medium text-gray-700">Order Summary</h2>
-      <hr className="border-gray-500/30 my-5" />
-      <div className="space-y-6">
+    <div className="w-full border border-[#D4A574] md:w-96 h-fit md:sticky md:top-20 bg-gradient-to-b  from-[#FFF5EB] to-[#F6E6D6] p-5 rounded-lg ">
+      <h2 className="text-xl md:text-2xl font-serif  text-[#1D1D1E]">Order Summary</h2>
+      <hr className="border-[#D4A574] my-5" />
+      <div className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
         {/* User Details Section */}
         <div>
           <div className="flex justify-between items-center mb-4">
@@ -204,6 +242,11 @@ const OrderSummary = () => {
             </label>
             <button
               onClick={() => {
+                if (!user) {
+                  toast.error("Please sign in to add details");
+                  openSignIn();
+                  return;
+                }
                 setIsEditMode(false);
                 setEditingAddressId(null);
                 setNewAddress({
@@ -215,17 +258,22 @@ const OrderSummary = () => {
                 });
                 setIsModalOpen(true);
               }}
-              className="text-sm bg-orange-600 text-white px-3 py-1.5 rounded hover:bg-orange-700 transition"
+              className="text-sm bg-[#D4A574] text-white px-3 py-1.5 rounded hover:bg-[#b28a5e] transition"
             >
               + Add Details
             </button>
           </div>
           
           {userAddresses.length === 0 ? (
-            <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+            <div className="text-center py-8 bg-[#FFF5EB] rounded-lg border-2 border-dashed border-[#F6E6D6]">
               <p className="text-gray-500 mb-3">No details added yet</p>
               <button
                 onClick={() => {
+                  if (!user) {
+                    toast.error("Please sign in to add details");
+                    openSignIn();
+                    return;
+                  }
                   setIsEditMode(false);
                   setEditingAddressId(null);
                   setNewAddress({
@@ -237,15 +285,15 @@ const OrderSummary = () => {
                   });
                   setIsModalOpen(true);
                 }}
-                className="text-orange-600 hover:text-orange-700 font-medium"
+                className="text-[#1e1e1d] hover:text-orange-700 font-medium"
               >
                 Add your details to continue
               </button>
             </div>
           ) : (
-            <div className="relative inline-block w-full text-sm border">
+            <div className="relative inline-block w-full text-sm border border-[#F6E6D6] rounded-lg">
               <button
-                className="peer w-full text-left px-4 pr-2 py-2 bg-white text-gray-700 focus:outline-none"
+                className="peer w-full text-left px-4 pr-2 py-2 bg-[#FFF5EB] text-[#1D1D1E] focus:outline-none rounded-lg"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <span>
@@ -267,11 +315,11 @@ const OrderSummary = () => {
               </button>
 
               {isDropdownOpen && (
-                <ul className="absolute w-full bg-white border shadow-md mt-1 z-10 py-1.5 max-h-64 overflow-y-auto">
+                <ul className="absolute w-full bg-[#FFF5EB] border border-[#F6E6D6] shadow-md mt-1 z-10 py-1.5 max-h-64 overflow-y-auto rounded-lg">
                   {userAddresses.map((address, index) => (
                     <li key={index} className="group">
                       <div 
-                        className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer flex justify-between items-center"
+                        className="px-4 py-2 hover:bg-[#F6E6D6] cursor-pointer flex justify-between items-center rounded-lg"
                         onClick={() => handleAddressSelect(address)}
                       >
                         <span className="flex-1">
@@ -283,7 +331,7 @@ const OrderSummary = () => {
                               e.stopPropagation();
                               handleEditAddress(address);
                             }}
-                            className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200 transition"
+                            className="text-xs bg-[#D4A574] text-white px-2 py-1 rounded hover:bg-[#F6E6D6] transition"
                             title="Edit"
                           >
                             Edit
@@ -323,13 +371,13 @@ const OrderSummary = () => {
             <p className="text-gray-600">Shipping Fee</p>
             <p className="font-medium text-gray-800">Free</p>
           </div>
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <p className="text-gray-600">Tax (2%)</p>
             <p className="font-medium text-gray-800">
               {currency}
               {Math.floor(getCartAmount() * 0.02)}
             </p>
-          </div>
+          </div> */}
           <div className="flex justify-between text-lg md:text-xl font-medium border-t pt-3">
             <p>Total</p>
             <p>
@@ -342,7 +390,7 @@ const OrderSummary = () => {
 
       <button
         onClick={createOrder}
-        className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
+        className="w-full bg-[#D4A574] text-white py-3 rounded-lg font-medium hover:bg-[#b28a5e] transition"
       >
         Place Order
       </button>
@@ -350,10 +398,10 @@ const OrderSummary = () => {
       {/* Add/Edit Address Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-gradient-to-b from-[#FFF5EB] to-[#F6E6D6] rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-medium text-gray-700">
+                <h2 className="text-2xl font-serif text-[#1D1D1E]">
                   {isEditMode ? 'Edit Your Details' : 'Add Your Details'}
                 </h2>
                 <button 
@@ -369,7 +417,7 @@ const OrderSummary = () => {
                       city: '',
                     });
                   }}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                  className="text-[#1D1D1E] hover:text-[#D4A574] text-2xl"
                 >
                   ×
                 </button>
@@ -377,7 +425,7 @@ const OrderSummary = () => {
               
               <form onSubmit={handleAddNewAddress} className="space-y-4">
                 <input
-                  className="px-3 py-2.5 focus:border-orange-500 transition border border-gray-300 rounded outline-none w-full text-gray-700"
+                  className="px-3 py-2.5 focus:border-[#D4A574] transition border border-[#F6E6D6] rounded outline-none w-full text-[#1D1D1E]"
                   type="text"
                   placeholder="Full name"
                   required
@@ -385,7 +433,7 @@ const OrderSummary = () => {
                   value={newAddress.fullName}
                 />
                 <input
-                  className="px-3 py-2.5 focus:border-orange-500 transition border border-gray-300 rounded outline-none w-full text-gray-700"
+                  className="px-3 py-2.5 focus:border-[#D4A574] transition border border-[#F6E6D6] rounded outline-none w-full text-[#1D1D1E]"
                   type="tel"
                   placeholder="Phone number"
                   required
@@ -393,7 +441,7 @@ const OrderSummary = () => {
                   value={newAddress.phoneNumber}
                 />
                 <input
-                  className="px-3 py-2.5 focus:border-orange-500 transition border border-gray-300 rounded outline-none w-full text-gray-700"
+                  className="px-3 py-2.5 focus:border-[#D4A574] transition border border-[#F6E6D6] rounded outline-none w-full text-[#1D1D1E]"
                   type="text"
                   placeholder="Pin code"
                   required
@@ -401,7 +449,7 @@ const OrderSummary = () => {
                   value={newAddress.pinCode}
                 />
                 <textarea
-                  className="px-3 py-2.5 focus:border-orange-500 transition border border-gray-300 rounded outline-none w-full text-gray-700 resize-none"
+                  className="px-3 py-2.5 focus:border-[#D4A574] transition border border-[#F6E6D6] rounded outline-none w-full text-[#1D1D1E] resize-none"
                   rows={3}
                   placeholder="Address (Area and Street)"
                   required
@@ -410,7 +458,7 @@ const OrderSummary = () => {
                 ></textarea>
                 <div className="flex space-x-3">
                   <input
-                    className="px-3 py-2.5 focus:border-orange-500 transition border border-gray-300 rounded outline-none w-full text-gray-700"
+                    className="px-3 py-2.5 focus:border-[#D4A574] transition border border-[#F6E6D6] rounded outline-none w-full text-[#1D1D1E]"
                     type="text"
                     placeholder="City"
                     required
@@ -434,13 +482,13 @@ const OrderSummary = () => {
                         city: '',
                       });
                     }}
-                    className="flex-1 bg-gray-200 text-gray-700 py-2.5 rounded hover:bg-gray-300 transition"
+                    className="flex-1 bg-[#FFF5EB] text-[#1D1D1E] py-2.5 rounded hover:bg-[#e9d9c9] transition"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit"
-                    className="flex-1 bg-orange-600 text-white py-2.5 rounded hover:bg-orange-700 transition"
+                    className="flex-1 bg-[#D4A574] text-white py-2.5 rounded hover:bg-[#b28a5e] transition"
                   >
                     {isEditMode ? 'Update Details' : 'Save Details'}
                   </button>

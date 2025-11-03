@@ -7,6 +7,8 @@ export const orderSchema = new mongoose.Schema({
     {
       product: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "product" }, // ✅ ObjectId
       quantity: { type: Number, required: true },
+      color: { type: String, required: false }, // Color name or descriptor
+      colorHex: { type: String, required: false }, // Raw hex value when available
     }
   ],
 

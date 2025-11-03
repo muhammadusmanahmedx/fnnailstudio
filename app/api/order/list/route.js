@@ -23,9 +23,17 @@ export async function GET(request) {
         const items = await Promise.all(
           order.items.map(async (item) => {   // ✅ lowercase
             const product = await Product.findById(item.product).lean();
+            const effectivePrice = product.offerPrice > 0 ? product.offerPrice : product.price;
+            console.log('Order item from DB:', {
+              itemColor: item.color,
+              itemColorHex: item.colorHex,
+              itemQuantity: item.quantity,
+              productId: item.product,
+              fullItem: item
+            });
             return {
               ...item.toObject?.() ?? item, // safeguard if plain object
-              product, // attach product details
+              product: { ...product, effectivePrice },
             };
           })
         );

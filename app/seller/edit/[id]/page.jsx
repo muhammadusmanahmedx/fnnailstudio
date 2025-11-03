@@ -271,7 +271,7 @@ const EditProduct = () => {
         </div>
 
         <div className="flex gap-4">
-          <button type="submit" disabled={submitLoading} className="px-8 py-2.5 bg-orange-600 text-white font-medium rounded disabled:opacity-50 disabled:cursor-not-allowed">
+          <button type="submit" disabled={submitLoading} className="px-8 py-2.5 bg-pink-600 text-white font-medium rounded disabled:opacity-50 disabled:cursor-not-allowed">
             {submitLoading ? 'UPDATING...' : 'UPDATE'}
           </button>
           <button 

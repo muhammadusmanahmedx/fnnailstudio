@@ -3,14 +3,15 @@ import { assets } from "@/assets/assets";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { useAppContext } from "@/context/AppContext";
-// import { headers } from "next/headers";
 import toast from "react-hot-toast";
+import { useClerk } from "@clerk/nextjs";
 
 const AddAddress = () => {
 
-    const { getToken, router } = useAppContext();
+    const { getToken, router, user } = useAppContext();
+    const { openSignIn } = useClerk();
 
     const [address, setAddress] = useState({
         fullName: '',
@@ -22,6 +23,12 @@ const AddAddress = () => {
 
   const onSubmitHandler = async (e) => {
   e.preventDefault();
+
+  if (!user) {
+    toast.error("Please sign in to add address");
+    openSignIn();
+    return;
+  }
 
   try {
     const token = await getToken();
@@ -47,6 +54,14 @@ const AddAddress = () => {
     toast.error(error.message);
   }
 };
+
+  // Check authentication on component mount
+  useEffect(() => {
+    if (!user) {
+      toast.error("Please sign in to add address");
+      openSignIn();
+    }
+  }, [user]);
 
 
     return (

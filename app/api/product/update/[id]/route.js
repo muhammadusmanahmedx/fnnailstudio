@@ -13,11 +13,13 @@ cloudinary.config({
 });
 
 // PUT - Update product
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
   try {
     await connectToDatabase();
-    
-    const { id } = params;
+
+    const { params } = context;
+    const { id } = await params;
+
     const { userId } = getAuth(request);
     
     if (!userId) {
@@ -72,21 +74,28 @@ export async function PUT(request, { params }) {
     }
 
     // Validation
-    if (!name || !description || !category || !price || !offerPrice || !stockStatus) {
+    if (!name || !description || !category || price === null || price === undefined || offerPrice === null || offerPrice === undefined || !stockStatus) {
       return NextResponse.json(
         { success: false, message: "All fields are required including stock status" },
         { status: 400 }
       );
     }
 
-    if (price <= 0 || offerPrice <= 0) {
+    if (price <= 0) {
       return NextResponse.json(
-        { success: false, message: "Prices must be greater than 0" },
+        { success: false, message: "Price must be greater than 0" },
         { status: 400 }
       );
     }
 
-    if (offerPrice >= price) {
+    if (offerPrice < 0) {
+      return NextResponse.json(
+        { success: false, message: "Offer price cannot be negative" },
+        { status: 400 }
+      );
+    }
+
+    if (offerPrice > 0 && offerPrice >= price) {
       return NextResponse.json(
         { success: false, message: "Offer price must be less than regular price" },
         { status: 400 }
