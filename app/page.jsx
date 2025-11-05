@@ -13,9 +13,9 @@ import Followsocials from "@/components/Followsocials";
 
 const Home = () => {
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden bg-gradient-to-b from-[#FFF5EB] to-[#F6E6D6]">
       <Navbar/>
- <div className="relative h-[75vh] sm:h-[85vh] bg-gradient-to-b from-[#FFF5EB] to-[#F6E6D6] overflow-hidden">
+ <div className="relative h-[75vh] sm:h-[85vh]  overflow-hidden">
         <div className="relative z-10 flex flex-col items-start justify-start h-full text-left px-4 sm:px-8 md:px-16 lg:px-32 max-w-full pt-16 sm:pt-20 md:pt-24">
           <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl lg:mt-16 font-serif mb-2 sm:mb-4 text-[#1D1D1E] leading-tight max-w-xl">
             Make Your Nails Look Gorgeous!

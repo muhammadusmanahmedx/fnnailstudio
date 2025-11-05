@@ -23,9 +23,9 @@ const AllProducts = () => {
 
     return (
         <>
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-hidden bg-gradient-to-b from-[#FFF5EB] to-[#F6E6D6]">
             <Navbar />
-            <div className="h-full bg-gradient-to-b from-[#FFF5EB] to-[#F6E6D6] ">
+            <div className="h-full  ">
                 {/* Header Section */}
                 <div className="px-6 md:px-16 lg:px-32 pt-16 pb-8">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -33,7 +33,7 @@ const AllProducts = () => {
                             <h1 className="text-3xl md:text-4xl font-serif text-[#1D1D1E] tracking-tight">
                                 All <span className="text-[#D4A574] font-serif">Products</span>
                             </h1>
-                            <div className="mt-2 flex justify-center md:justify-start">
+                            <div className="mt-2 flex justify-Start md:justify-start">
                                 <div className="w-20 h-1 bg-gradient-to-r from-[#D4A574] to-[#F6E6D6] rounded-full"></div>
                             </div>
                             <p className="text-gray-600 text-lg mt-3">

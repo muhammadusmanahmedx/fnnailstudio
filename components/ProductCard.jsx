@@ -77,11 +77,11 @@ const ProductCard = ({ product }) => {
                 onClick={() => { router.push('/product/' + product._id); scrollTo(0, 0) }}
                 className="flex flex-col items-start gap-0.5 w-full cursor-pointer"
             >
-                <div className="cursor-pointer group relative bg-gray-500/10 rounded-lg w-full h-40 sm:h-48 md:h-52 flex items-center justify-center">
+                <div className="cursor-pointer group relative w-full h-40 sm:h-48 md:h-52 flex items-center justify-center overflow-hidden">
                     <Image
                         src={product.image[0]}
                         alt={product.name}
-                        className="object-cover w-4/5 h-4/5 md:w-full md:h-full scale-105"
+                        className="object-cover w-full h-full"
                         width={800}
                         height={800}
                     />

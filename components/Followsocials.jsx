@@ -5,7 +5,7 @@ const Followsocials = () => {
     <>
     
       {/* Follow Our Socials Section */}
-      <section className=" py-12 pb-24 overflow-hidden">
+      <section className=" py-12 pb-24  overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-2xl sm:text-3xl font-serif mb-8 text-[#1D1D1E]">Follow Our Socials</h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
