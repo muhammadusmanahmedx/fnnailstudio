@@ -92,7 +92,7 @@ const Product = () => {
 
     return productData ? (<>
         <Navbar />
-        <div className="px-6 md:px-16 lg:px-32 pt-14 pb-10 space-y-10 bg-[#F6E6D6] ">
+        <div className="px-6 md:px-16 overflow-x-hidden lg:px-32 pt-14 pb-10 space-y-10 bg-[#FFF5EB] ">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
                 <div className="flex gap-4">
                     {/* Vertical Thumbnail Grid */}
@@ -248,12 +248,20 @@ const Product = () => {
                                             onChange={(e) => setSelectedColor(e.target.value)}
                                             className="w-32 h-10 cursor-pointer"
                                         />
-                                        <button
-                                            onClick={() => setShowColorPicker(false)}
-                                            className="px-3 py-1 bg-[#E8A88F] text-white text-xs rounded hover:bg-[#d49278]"
-                                        >
-                                            Done
-                                        </button>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => setSelectedColor('#000000')}
+                                                className="px-3 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600 flex-1"
+                                            >
+                                                Reset
+                                            </button>
+                                            <button
+                                                onClick={() => setShowColorPicker(false)}
+                                                className="px-3 py-1 bg-[#E8A88F] text-white text-xs rounded hover:bg-[#d49278] flex-1"
+                                            >
+                                                Done
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             )}

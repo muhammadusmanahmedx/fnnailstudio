@@ -4,6 +4,7 @@ import ProductCard from "@/components/ProductCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAppContext } from "@/context/AppContext";
+import Followsocials from "@/components/Followsocials";
 
 const AllProducts = () => {
 
@@ -22,6 +23,7 @@ const AllProducts = () => {
 
     return (
         <>
+        <div className="overflow-x-hidden">
             <Navbar />
             <div className="h-full bg-gradient-to-b from-[#FFF5EB] to-[#F6E6D6] ">
                 {/* Header Section */}
@@ -88,7 +90,7 @@ const AllProducts = () => {
             </div>
 
             {/* Follow Our Socials Section */}
-            <section className="bg-[#F6E6D6] py-12">
+            {/* <section className="bg-[#F6E6D6] py-12">
                 <div className="max-w-7xl mx-auto px-4 text-center">
                     <h2 className="text-3xl font-serif mb-8 text-[#1D1D1E]">Follow Our Socials</h2>
                     <div className="flex items-center justify-center gap-6">
@@ -117,8 +119,12 @@ const AllProducts = () => {
                         </a>
                     </div>
                 </div>
-            </section>
+            </section> */}
+
+<Followsocials/>
+
             <Footer />
+            </div>
         </>
     );
 };

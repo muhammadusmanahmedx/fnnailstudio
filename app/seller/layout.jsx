@@ -8,8 +8,12 @@ const Layout = ({ children }) => {
     <div>
       <Navbar />
       <div className='flex w-full'>
-        <Sidebar />
-        {children}
+        <div className="flex-shrink-0">
+          <Sidebar />
+        </div>
+        <div className="flex-1 overflow-auto">
+          {children}
+        </div>
       </div>
     </div>
   )

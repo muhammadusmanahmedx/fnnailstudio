@@ -8,6 +8,7 @@ const HomeProducts = () => {
 
   return (
     <>
+    <div className="bg-[#F6E6D6]">
       <h2 className="text-4xl font-serif pt-12 mb-4 text-[#1D1D1E]">Popular Products</h2>
           <p className="text-lg text-gray-600 mb-2">
             At GlamNails, we understand that when it comes to nail art, you have many options to choose from.
@@ -20,6 +21,7 @@ const HomeProducts = () => {
       <button onClick={() => { router.push('/all-products') }} className="px-12 py-2.5 border bg-[#1d1d1e] rounded text-white hover:bg-[#2e2e34] transition">
         See more
       </button>
+    </div>
     </div>
     </>
   );

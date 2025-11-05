@@ -19,6 +19,8 @@ const Orders = () => {
     const [updatingStatus, setUpdatingStatus] = useState({});
     const [activeFilter, setActiveFilter] = useState('all');
     const [selectedOrderForReceipt, setSelectedOrderForReceipt] = useState(null);
+    const [isLogoLoaded, setIsLogoLoaded] = useState(false);
+    const [isPrintReady, setIsPrintReady] = useState(false);
     const receiptRef = useRef();
 
     const colorNameMap = {
@@ -160,14 +162,38 @@ const Orders = () => {
         onAfterPrint: () => {
             toast.success('Receipt printed successfully!');
             setSelectedOrderForReceipt(null);
+            setIsLogoLoaded(false);
+            setIsPrintReady(false);
         }
     });
 
-    const generateReceipt = (order) => {
-        setSelectedOrderForReceipt(order);
-        setTimeout(() => {
+    const handleLogoLoad = (loaded) => {
+        setIsLogoLoaded(loaded);
+        if (loaded) {
+            toast.dismiss('receipt-prep');
+            // Give a small delay to ensure everything is rendered
+            setTimeout(() => {
+                setIsPrintReady(true);
+            }, 300);
+        } else {
+            toast.dismiss('receipt-prep');
+            toast.error('Failed to load logo. Please try again.');
+            setSelectedOrderForReceipt(null);
+        }
+    };
+
+    // Trigger print when logo is loaded and ready
+    useEffect(() => {
+        if (isPrintReady && isLogoLoaded && selectedOrderForReceipt) {
             handlePrintReceipt();
-        }, 100);
+        }
+    }, [isPrintReady, isLogoLoaded]);
+
+    const generateReceipt = (order) => {
+        setIsLogoLoaded(false);
+        setIsPrintReady(false);
+        setSelectedOrderForReceipt(order);
+        toast.loading('Preparing receipt...', { id: 'receipt-prep' });
     };
 
     return (
@@ -388,7 +414,11 @@ const Orders = () => {
             <div style={{ display: 'none' }}>
                 {selectedOrderForReceipt && (
                     <div ref={receiptRef}>
-                        <Receipt order={selectedOrderForReceipt} currency={currency} />
+                        <Receipt 
+                            order={selectedOrderForReceipt} 
+                            currency={currency} 
+                            onLogoLoad={handleLogoLoad}
+                        />
                     </div>
                 )}
             </div>

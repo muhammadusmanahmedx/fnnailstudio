@@ -1,9 +1,11 @@
-import { getAuth } from "@clerk/nextjs/server";
+import { getAuth, clerkClient } from "@clerk/nextjs/server";
 import User from "@/models/Users";
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/config/db";
 import Order from "@/models/Order";
 import Product from "@/models/Product";
+import Address from "@/models/Address";
+import { sendSellerOrderNotification } from "@/lib/sendEmail";
 
 const colorNameMap = {
   Black: "#000000",
@@ -133,6 +135,80 @@ export async function POST(request) {
     if (user) {
       user.cartItems = {};
       await user.save();
+    }
+
+    // === SEND EMAIL NOTIFICATIONS TO SELLERS ===
+    try {
+      // Fetch customer details
+      const client = await clerkClient();
+      const customer = await client.users.getUser(userId);
+      
+      // Fetch address details
+      const addressDetails = await Address.findById(address._id || address);
+      
+      // Group order items by seller
+      const sellerOrders = {};
+      
+      for (const orderItem of orderItems) {
+        const product = await Product.findById(orderItem.product);
+        if (!product) continue;
+        
+        const sellerId = product.userId;
+        if (!sellerOrders[sellerId]) {
+          sellerOrders[sellerId] = [];
+        }
+        
+        sellerOrders[sellerId].push({
+          product: product,
+          quantity: orderItem.quantity,
+          color: orderItem.color,
+          colorHex: orderItem.colorHex,
+        });
+      }
+      
+      // Send email to each seller
+      const emailPromises = [];
+      for (const [sellerId, items] of Object.entries(sellerOrders)) {
+        try {
+          const seller = await client.users.getUser(sellerId);
+          
+          // Check if user is a seller
+          if (seller.publicMetadata?.role === 'seller') {
+            const orderData = {
+              order: order,
+              address: {
+                street: addressDetails.area || '',
+                city: addressDetails.city || '',
+                state: '',
+                zipCode: addressDetails.pinCode || '',
+                country: 'Pakistan',
+                phone: addressDetails.phoneNumber || '',
+              }
+            };
+            
+            const customerData = {
+              name: addressDetails.fullName || customer.firstName + ' ' + customer.lastName || 'Customer',
+              email: customer.emailAddresses[0]?.emailAddress || '',
+            };
+            
+            // Send email (non-blocking)
+            emailPromises.push(
+              sendSellerOrderNotification(seller, items, orderData, customerData)
+                .catch(err => console.error(`Failed to send email to seller ${sellerId}:`, err))
+            );
+          }
+        } catch (error) {
+          console.error(`Error processing seller ${sellerId}:`, error);
+        }
+      }
+      
+      // Wait for all emails to be sent (but don't block the response)
+      await Promise.allSettled(emailPromises);
+      console.log(`Sent ${emailPromises.length} seller notification emails`);
+      
+    } catch (emailError) {
+      // Log error but don't fail the order
+      console.error('Error sending seller notifications:', emailError);
     }
 
     return NextResponse.json({ success: true, message: "Order placed successfully", order });

@@ -185,12 +185,12 @@ const CategoriesPage = () => {
             {/* Categories Table */}
             <div className="flex flex-col items-center max-w-full w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
               <div className="w-full overflow-x-auto">
-                <table className="table-fixed w-full min-w-[500px] overflow-hidden">
+                <table className="table-auto w-full min-w-[300px] md:min-w-[500px] overflow-hidden">
                   <thead className="text-gray-900 text-xs md:text-sm text-left bg-gray-50">
                     <tr>
-                      <th className="w-2/3 md:w-2/3 px-2 md:px-4 py-2 md:py-3 font-medium truncate">Category Name</th>
-                      <th className="px-2 md:px-4 py-2 md:py-3 font-medium truncate max-sm:hidden">Products</th>
-                      <th className="px-2 md:px-4 py-2 md:py-3 font-medium truncate text-center">Actions</th>
+                      <th className="w-1/2 px-2 md:px-4 py-2 md:py-3 font-medium truncate">Category Name</th>
+                      <th className="w-1/4 px-2 md:px-4 py-2 md:py-3 font-medium truncate max-sm:hidden">Products</th>
+                      <th className="w-1/4 px-2 md:px-4 py-2 md:py-3 font-medium truncate text-center">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="text-xs md:text-sm text-gray-500">

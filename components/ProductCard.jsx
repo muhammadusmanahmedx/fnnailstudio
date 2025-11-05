@@ -72,15 +72,12 @@ const ProductCard = ({ product }) => {
     }
 
     return (
-        <div className="bg-[#ffe1d7]   border border-[#E8A88F] p-4">
+        <div className="bg-[#ffe1d7] border border-[#E8A88F] p-3 sm:p-4 w-full">
             <div
                 onClick={() => { router.push('/product/' + product._id); scrollTo(0, 0) }}
-                className="flex flex-col items-start gap-0.5 max-w-[200px] w-full cursor-pointer"
+                className="flex flex-col items-start gap-0.5 w-full cursor-pointer"
             >
-                <div className="cursor-pointer group relative bg-gray-500/10 rounded-lg w-full h-52 flex items-center justify-center">
-                    {/* In Stock Indicator */}
-                   
-
+                <div className="cursor-pointer group relative bg-gray-500/10 rounded-lg w-full h-40 sm:h-48 md:h-52 flex items-center justify-center">
                     <Image
                         src={product.image[0]}
                         alt={product.name}
@@ -93,7 +90,7 @@ const ProductCard = ({ product }) => {
                             e.stopPropagation();
                             toggleWishlist(product);
                         }}
-                        className={`absolute top-2 right-2 p-2 rounded-full shadow-md transition-all duration-200 ${
+                        className={`absolute top-2 right-2 p-1.5 sm:p-2 rounded-full shadow-md transition-all duration-200 ${
                             isInWishlist(product._id) 
                                 ? 'bg-red-50 hover:bg-red-100' 
                                 : 'bg-white hover:bg-gray-50'
@@ -101,7 +98,7 @@ const ProductCard = ({ product }) => {
                     >
                         {isInWishlist(product._id) ? (
                             <svg 
-                                className="h-4 w-4 text-red-500" 
+                                className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" 
                                 fill="currentColor" 
                                 viewBox="0 0 20 20"
                             >
@@ -113,7 +110,7 @@ const ProductCard = ({ product }) => {
                             </svg>
                         ) : (
                             <svg 
-                                className="h-4 w-4 text-gray-600" 
+                                className="h-3 w-3 sm:h-4 sm:w-4 text-gray-600" 
                                 fill="none" 
                                 stroke="currentColor" 
                                 viewBox="0 0 24 24"
@@ -129,35 +126,36 @@ const ProductCard = ({ product }) => {
                     </button>
                 </div>
 
-                <p className="md:text-base font-medium pt-2 w-full truncate">{product.name}</p>
-                <p className="w-full text-xs text-gray-500/70 max-sm:hidden truncate">{product.description}</p>
-                <div className="flex items-center justify-between w-full mt-1">
+                <p className="text-sm sm:text-base font-medium pt-1.5 sm:pt-2 w-full truncate">{product.name}</p>
+                <p className="w-full text-xs text-gray-500/70 hidden sm:block truncate">{product.description}</p>
+                
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mt-0.5 sm:mt-1 gap-1 sm:gap-0">
                     {/* Price */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                         {product.offerPrice && product.offerPrice > 0 ? (
                             <>
-                                <p className="text-sm text-gray-500 line-through">
+                                <p className="text-xs sm:text-sm text-gray-500 line-through">
                                     {currency}{product.price}
                                 </p>
-                                <p className="text-base font-medium text-black">
+                                <p className="text-sm sm:text-base font-medium text-black">
                                     {product.offerPrice}
                                 </p>
                             </>
                         ) : (
-                            <p className="text-base font-medium text-black">
+                            <p className="text-sm sm:text-base font-medium text-black">
                                 {currency}{product.price}
                             </p>
                         )}
                     </div>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5 sm:gap-1">
                         <p className="text-xs text-gray-500">5.0</p>
                         <div className="flex items-center gap-0.5">
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <Image
                                     key={index}
-                                    className="h-3 w-3 text-yellow-500"
+                                    className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-yellow-500"
                                     src={assets.star_icon}
                                     alt="star_icon"
                                 />
@@ -166,22 +164,22 @@ const ProductCard = ({ product }) => {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2 w-full mt-1">
+                <div className="flex flex-col gap-1.5 sm:gap-2 w-full mt-0.5 sm:mt-1">
                     <div className="relative">
                         <button 
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setShowColorPicker(!showColorPicker);
                             }}
-                            className="mt-2 w-full px-3 py-2 border text-sm transition bg-gray-100 hover:bg-gray-200 cursor-pointer flex items-center justify-center gap-2"
+                            className="mt-1.5 sm:mt-2 w-full px-2 sm:px-3 py-1.5 sm:py-2 border text-xs sm:text-sm transition bg-gray-100 hover:bg-gray-200 cursor-pointer flex items-center justify-center gap-1.5 sm:gap-2"
                         >
                             {selectedColor !== '#000000' ? (
                                 <>
                                     <div 
-                                        className="w-4 h-4 rounded border border-gray-300" 
+                                        className="w-3 h-3 sm:w-4 sm:h-4 rounded border border-gray-300" 
                                         style={{ backgroundColor: selectedColor }}
                                     ></div>
-                                    {getColorName(selectedColor)}
+                                    <span className="truncate">{getColorName(selectedColor)}</span>
                                 </>
                             ) : (
                                 'Custom Color'
@@ -189,7 +187,7 @@ const ProductCard = ({ product }) => {
                         </button>
                         {showColorPicker && (
                             <div 
-                                className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-10"
+                                className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-lg shadow-lg p-2 sm:p-3 z-10"
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <div className="flex flex-col gap-2">
@@ -197,17 +195,28 @@ const ProductCard = ({ product }) => {
                                         type="color" 
                                         value={selectedColor}
                                         onChange={(e) => setSelectedColor(e.target.value)}
-                                        className="w-32 h-10 cursor-pointer"
+                                        className="w-24 h-8 sm:w-32 sm:h-10 cursor-pointer"
                                     />
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setShowColorPicker(false);
-                                        }}
-                                        className="px-3 py-1 bg-[#E8A88F] text-white text-xs rounded hover:bg-[#d49278]"
-                                    >
-                                        Done
-                                    </button>
+                                    <div className="flex gap-1.5 sm:gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedColor('#000000');
+                                            }}
+                                            className="px-2 sm:px-3 py-1 bg-gray-500 text-white text-xs rounded hover:bg-gray-600 flex-1"
+                                        >
+                                            Reset
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setShowColorPicker(false);
+                                            }}
+                                            className="px-2 sm:px-3 py-1 bg-[#E8A88F] text-white text-xs rounded hover:bg-[#d49278] flex-1"
+                                        >
+                                            Done
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -217,13 +226,12 @@ const ProductCard = ({ product }) => {
                         onClick={(e) => {
                             e.stopPropagation();
                             if (product.stock > 0) {
-                                // Pass "Default" as colorName if no color is selected
                                 const colorToUse = selectedColor === '#000000' ? '#FFFFFF' : selectedColor;
                                 const colorNameToUse = selectedColor === '#000000' ? 'Default' : getColorName(colorToUse);
                                 
                                 addToCart(product._id, {
-                                    color: colorToUse, // Pass the selected color hex
-                                    colorName: colorNameToUse, // Pass "Default" or the color name
+                                    color: colorToUse,
+                                    colorName: colorNameToUse,
                                     name: product.name,
                                     price: product.offerPrice || product.price,
                                     image: product.image[0],
@@ -232,13 +240,13 @@ const ProductCard = ({ product }) => {
                             }
                         }}
                         disabled={product.stock === 0}
-                        className={`mt-2 w-full px-4 py-2 border text-sm transition flex items-center justify-center gap-2 ${
+                        className={`mt-1.5 sm:mt-2 w-full px-3 sm:px-4 py-1.5 sm:py-2 border text-xs sm:text-sm transition flex items-center justify-center gap-1.5 sm:gap-2 ${
                             product.stock > 0 
                                 ? 'text-white bg-[#E8A88F] hover:bg-[#d49278] cursor-pointer' 
                                 : 'text-gray-400 border-gray-300 cursor-not-allowed bg-gray-100'
                         }`}
                     >
-                        <ShoppingCart className="h-4 w-4" /> Add to Cart
+                        <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4" /> Add to Cart
                     </button>
                 </div>
             </div>

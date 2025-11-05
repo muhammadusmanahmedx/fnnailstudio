@@ -317,14 +317,52 @@ export const AppContextProvider = (props) => {
             // Prioritize the colorName from options, then existing, then derive from key or hex
             const resolvedColorName = options.colorName || existingItem.colorName || colorFromKey || getColorNameFromHex(colorHex) || 'Default';
 
-            cartData[cartKey] = {
-                ...existingItem,
-                productId: existingItem.productId || productIdFromKey,
-                quantity: quantity,
-                colorName: resolvedColorName,
-                color: colorHex,
-                colorHex: colorHex,
-            };
+            // Check if color is being changed and if we need to merge with existing item
+            const newCartKey = `${productIdFromKey}_${resolvedColorName}`;
+            
+            if (options.color && newCartKey !== cartKey) {
+                // Color is being changed to a different value
+                // Check if an item with the new color already exists
+                if (cartData[newCartKey]) {
+                    // Merge: Add quantity to existing item with that color
+                    const existingQuantity = typeof cartData[newCartKey] === 'number' 
+                        ? cartData[newCartKey] 
+                        : cartData[newCartKey].quantity || 0;
+                    
+                    cartData[newCartKey] = {
+                        ...(typeof cartData[newCartKey] === 'object' ? cartData[newCartKey] : {}),
+                        productId: productIdFromKey,
+                        quantity: existingQuantity + quantity,
+                        colorName: resolvedColorName,
+                        color: colorHex,
+                        colorHex: colorHex,
+                    };
+                    // Remove the old cart key
+                    delete cartData[cartKey];
+                } else {
+                    // No existing item with that color, so rename the key
+                    cartData[newCartKey] = {
+                        ...existingItem,
+                        productId: productIdFromKey,
+                        quantity: quantity,
+                        colorName: resolvedColorName,
+                        color: colorHex,
+                        colorHex: colorHex,
+                    };
+                    // Remove the old cart key
+                    delete cartData[cartKey];
+                }
+            } else {
+                // Just updating quantity, no color change
+                cartData[cartKey] = {
+                    ...existingItem,
+                    productId: existingItem.productId || productIdFromKey,
+                    quantity: quantity,
+                    colorName: resolvedColorName,
+                    color: colorHex,
+                    colorHex: colorHex,
+                };
+            }
         }
         
         setCartItems(cartData)

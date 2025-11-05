@@ -1,7 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-const Receipt = ({ order, currency = 'Rs' }) => {
+const Receipt = ({ order, currency = 'Rs', onLogoLoad }) => {
+  const [logoLoaded, setLogoLoaded] = useState(false);
+  const [logoError, setLogoError] = useState(false);
+  
+  // Multiple logo sources as fallback
+  const logoSources = [
+    '/fallback.png',
+    'https://res.cloudinary.com/YOUR_CLOUD_NAME/image/upload/fallback.png', // Add your cloudinary URL here
+  ];
+  
+  const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
+  const currentLogo = logoSources[currentLogoIndex];
+
+  const handleLogoLoad = () => {
+    setLogoLoaded(true);
+    setLogoError(false);
+    if (onLogoLoad) {
+      onLogoLoad(true);
+    }
+  };
+
+  const handleLogoError = () => {
+    console.error('Logo failed to load:', currentLogo);
+    setLogoError(true);
+    
+    // Try next logo source
+    if (currentLogoIndex < logoSources.length - 1) {
+      console.log('Trying next logo source...');
+      setCurrentLogoIndex(currentLogoIndex + 1);
+      setLogoLoaded(false);
+    } else {
+      console.error('All logo sources failed');
+      if (onLogoLoad) {
+        onLogoLoad(false);
+      }
+    }
+  };
+
+  // Preload the logo
+  useEffect(() => {
+    const img = document.createElement('img');
+    img.src = currentLogo;
+    img.onload = () => {
+      setLogoLoaded(true);
+      setLogoError(false);
+      if (onLogoLoad) {
+        onLogoLoad(true);
+      }
+    };
+    img.onerror = () => {
+      handleLogoError();
+    };
+  }, [currentLogo]);
+
   const colorNameMap = {
     'Black': '#000000',
     'White': '#FFFFFF',
@@ -69,12 +122,21 @@ const Receipt = ({ order, currency = 'Rs' }) => {
       {/* Receipt Icon and Brand Logo */}
       <div className="text-center mb-4 pb-3 border-b-2 border-pink-300" style={{ position: 'sticky', top: 0, background: 'white', zIndex: 10 }}>
         <div className="flex justify-center items-center gap-4 mb-2">
+          {!logoLoaded && (
+            <div className="flex items-center justify-center" style={{ width: 180, height: 54 }}>
+              <p className="text-xs text-gray-500">Loading logo...</p>
+            </div>
+          )}
           <Image
-            src="/fallback.png"
+            src={currentLogo}
             alt="Brand Logo"
             width={180}
             height={54}
-           
+            onLoad={handleLogoLoad}
+            onError={handleLogoError}
+            style={{ display: logoLoaded ? 'block' : 'none' }}
+            priority={true}
+            unoptimized={currentLogoIndex > 0}
           />
         </div>
         <div className="flex items-center justify-center gap-2 mt-1">
@@ -141,7 +203,7 @@ const Receipt = ({ order, currency = 'Rs' }) => {
                     <td className="py-2">
                       <div>
                         <p className="font-medium text-gray-800">{item.product.name}</p>
-                        <p className="text-xs text-gray-500">{item.product.category}</p>
+                        {/* <p className="text-xs text-gray-500">{item.product.category}</p> */}
                       </div>
                     </td>
                     <td className="py-2">
