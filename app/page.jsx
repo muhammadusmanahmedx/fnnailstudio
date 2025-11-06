@@ -277,7 +277,7 @@ const Home = () => {
               />
               <div className="text-left flex-1">
                 <p className="text-base sm:text-lg text-[#1D1D1E]/60 mb-4">"The final result of my manicure was absolutely stunning. The technician skillfully applied the polish, leaving my nails with a flawless and glossy finish. I received numerous compliments on my nails, and I couldn't help but show them off proudly. The final result of my manicure was absolutely stunning."</p>
-                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Shehnaz</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Nadia</h3>
                 <p className="text-sm text-[#1D1D1E]/40">Student</p>
               </div>
               <img 
@@ -296,7 +296,7 @@ const Home = () => {
               />
               <div className="text-left flex-1">
                 <p className="text-base sm:text-lg text-[#1D1D1E]/60 mb-4">"Overall, my experience at GlamNails was outstanding. The professionalism, skill, the selection of nail products, colors was extensive and attention to detail demonstrated by the staff truly sets this salon apart. I left feeling pampered and confident with my beautiful nails."</p>
-                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Ahmed</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Warda</h3>
                 <p className="text-sm text-[#1D1D1E]/40">Islamabad</p>
               </div>
              <img 
