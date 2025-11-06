@@ -130,7 +130,7 @@ const CategoriesPage = () => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-pink-50 md:w-[calc(100%-16rem)]">
+    <div className="flex h-screen  md:w-[calc(100%-16rem)]">
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 min-h-screen flex flex-col justify-between">
           {loading ? (

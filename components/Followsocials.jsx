@@ -11,7 +11,7 @@ const Followsocials = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             {/* Instagram */}
             <a 
-              href="https://instagram.com/fnnailstudio" 
+              href="https://www.instagram.com/fnnailstudioo" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-3 hover:opacity-80 transition"
@@ -27,7 +27,7 @@ const Followsocials = () => {
 
             {/* TikTok */}
             <a 
-              href="https://tiktok.com/@fnnailstudio" 
+              href="https://www.tiktok.com/@fnnailstudio?_r=1&_t=ZS-91AJZQ8mxjr" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-3 hover:opacity-80 transition"

@@ -252,14 +252,14 @@ const Home = () => {
             {/* Testimonial 1 */}
             <div className="bg-[#F6E6D6] p-4 sm:p-6 rounded-lg flex flex-col sm:flex-row items-start relative">
              <img 
-  src="https://res.cloudinary.com/dshjm6hcx/image/upload_v1762119731/Image_tofgtm.png"
+  src="https://res.cloudinary.com/dshjm6hcx/image/upload/v1762119742/Image_1_wil6py.png"
   alt="Customer 1" 
   className="w-16 h-16 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6 flex-shrink-0"
 />
               <div className="text-left flex-1">
                 <p className="text-base sm:text-lg text-[#1D1D1E]/60 mb-4">"The salon itself has a warm and inviting atmosphere, creating a relaxing environment as soon as you walk through the door. The staff greeted me with a friendly smile and made me feel instantly comfortable. The nail technician who worked on my nails was incredibly talented. They took the time to listen to my preferences."</p>
-                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Mary M. Seidel</h3>
-                <p className="text-sm text-[#1D1D1E]/40">Los Angel, CA</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Faiza</h3>
+                <p className="text-sm text-[#1D1D1E]/40">Islamabad</p>
               </div>
               <img 
                 src="/quotes.png" 
@@ -271,14 +271,14 @@ const Home = () => {
             {/* Testimonial 2 */}
             <div className="bg-[#F6E6D6] p-4 sm:p-6 rounded-lg flex flex-col sm:flex-row items-start relative">
               <img 
-                src="https://res.cloudinary.com/dshjm6hcx/image/upload_v1762119742/Image_1_wil6py.png" 
+                src="https://res.cloudinary.com/dshjm6hcx/image/upload/v1762119731/Image_tofgtm.png" 
                 alt="Customer 2" 
                 className="w-16 h-16 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6 flex-shrink-0"
               />
               <div className="text-left flex-1">
                 <p className="text-base sm:text-lg text-[#1D1D1E]/60 mb-4">"The final result of my manicure was absolutely stunning. The technician skillfully applied the polish, leaving my nails with a flawless and glossy finish. I received numerous compliments on my nails, and I couldn't help but show them off proudly. The final result of my manicure was absolutely stunning."</p>
-                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Kathy R. Crockett</h3>
-                <p className="text-sm text-[#1D1D1E]/40">Manager, Office</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Shehnaz</h3>
+                <p className="text-sm text-[#1D1D1E]/40">Student</p>
               </div>
               <img 
                 src="/quotes.png" 
@@ -290,14 +290,14 @@ const Home = () => {
             {/* Testimonial 3 */}
             <div className="bg-[#F6E6D6] p-4 sm:p-6 rounded-lg flex flex-col sm:flex-row items-start relative">
               <img 
-                src="https://res.cloudinary.com/dshjm6hcx/image/upload_v1762119747/Image_2_qqblcg.png" 
+                src="https://res.cloudinary.com/dshjm6hcx/image/upload/v1762119747/Image_2_qqblcg.png" 
                 alt="Customer 3" 
                 className="w-16 h-16 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6 flex-shrink-0"
               />
               <div className="text-left flex-1">
                 <p className="text-base sm:text-lg text-[#1D1D1E]/60 mb-4">"Overall, my experience at GlamNails was outstanding. The professionalism, skill, the selection of nail products, colors was extensive and attention to detail demonstrated by the staff truly sets this salon apart. I left feeling pampered and confident with my beautiful nails."</p>
-                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Belinda W. Scott</h3>
-                <p className="text-sm text-[#1D1D1E]/40">Student</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-[#1D1D1E]">Ahmed</h3>
+                <p className="text-sm text-[#1D1D1E]/40">Islamabad</p>
               </div>
              <img 
                 src="/quotes.png" 
