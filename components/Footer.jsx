@@ -91,7 +91,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <p className="text-xs sm:text-sm text-gray-400 text-center">
-          Copyright 2025 © <a href="https://wonsol.com" target="_blank" rel="noopener noreferrer" className="font-medium text-white hover:underline">Won Solutions</a> All Right Reserved.
+          Copyright 2025 © <a href="https://fatimanazir.vercel.app" target="_blank" rel="noopener noreferrer" className="font-medium text-white hover:underline">Fatima Nazir</a> All Right Reserved.
         </p>
       </div>
     </footer>
